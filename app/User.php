@@ -37,4 +37,10 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function sendMessage()
+    {
+        return $this->belongsToMany('App\Messages','income_messages','user_id', 'messages_id')
+            ->withPivot('to_user_id');
+    }
 }

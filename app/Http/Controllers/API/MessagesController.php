@@ -1,11 +1,15 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
 
+use App\Http\Controllers\API\BaseController;
+use App\Http\Resources\MessagesResource;
 use App\Messages;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Validator;
 
-class MessagesController extends Controller
+class MessagesController extends BaseController
 {
     /**
      * Display a listing of the resource.
@@ -14,7 +18,10 @@ class MessagesController extends Controller
      */
     public function index()
     {
-        //
+        $user = Auth::user();
+        $messages = $user->sendMessage()->get();
+
+        return $this->sendResponse(MessagesResource::collection($messages), 'Messages retrieved successfully.');
     }
 
     /**
@@ -24,7 +31,7 @@ class MessagesController extends Controller
      */
     public function create()
     {
-        //
+
     }
 
     /**
@@ -35,7 +42,21 @@ class MessagesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $input = $request->all();
+
+        $validator = Validator::make($input, [
+            'message' => 'required',
+        ]);
+
+        if($validator->fails()){
+            return $this->sendError('Validation Error.', $validator->errors());
+        }
+
+        $message = Messages::create($input);
+
+        $message->sendMessage()->attach(Auth::id(),['to_user_id'=>$request->to_user_id]);
+
+        return $this->sendResponse(new MessagesResource($message), 'Message sent successfully.');
     }
 
     /**

@@ -7,6 +7,6 @@ use Faker\Generator as Faker;
 
 $factory->define(Messages::class, function (Faker $faker) {
     return [
-        //
+        'message'=>$faker->text(100)
     ];
 });

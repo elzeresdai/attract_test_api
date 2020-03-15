@@ -11,6 +11,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // $this->call(UsersTableSeeder::class);
+        $users = factory(App\User::class, 5)->create();
+
+        factory(App\Messages::class, 20)->create()->each(function(App\Messages $message) use ($users){
+            $message->sendMessage()->attach(
+                $users->random(1,5)->pluck('id')->toArray(),
+                ['to_user_id'=>$users->random()->id]
+            );
+        });
+
+
     }
 }

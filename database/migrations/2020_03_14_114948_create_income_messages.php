@@ -13,13 +13,14 @@ class CreateIncomeMessages extends Migration
      */
     public function up()
     {
-        Schema::table('income_messages', function (Blueprint $table) {
-            $table->integer('user_id')->unsigned();
-            $table->integer('message_id')->unsigned();
+        Schema::create('income_messages', function (Blueprint $table) {
+            $table->bigInteger('user_id')->unsigned();
+            $table->bigInteger('to_user_id')->unsigned();
+            $table->bigInteger('messages_id')->unsigned();
             $table->timestamps();
-
-            $table->foreign('user_id')->references('id')->on('users');
-            $table->foreign('message_id')->references('id')->on('messages');
+            $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('to_user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('messages_id')->references('id')->on('messages')->onUpdate('cascade')->onDelete('cascade');
 
         });
     }
