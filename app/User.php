@@ -38,7 +38,7 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function sendMessage()
+    public function messages()
     {
         return $this->belongsToMany('App\Messages','income_messages','user_id', 'messages_id')
             ->withPivot('to_user_id');
